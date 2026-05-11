@@ -1,0 +1,154 @@
+# ───────────────────────────────────────────
+#  Python
+# ───────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+MANIFEST
+
+# ───────────────────────────────────────────
+#  Virtual environments
+# ───────────────────────────────────────────
+.venv/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# ───────────────────────────────────────────
+#  uv
+# ───────────────────────────────────────────
+uv.lock          # lock faylni track qilmoqchi bo'lsangiz bu qatorni o'chiring
+.uv/
+
+# ───────────────────────────────────────────
+#  Django
+# ───────────────────────────────────────────
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/staticfiles/
+/mediafiles/
+/static/
+/media/
+
+# Migrations (ixtiyoriy — ko'pchilik track qiladi)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# ───────────────────────────────────────────
+#  Environment / Secrets   (env/ papkasi)
+# ───────────────────────────────────────────
+env/.env           # haqiqiy sirlar
+env/.env.prod
+env/.env.local
+env/.env.*.local
+!env/.env.example  # ✅ namuna — gitga tushadi
+
+# root darajasidagi .env lar ham (ehtiyot uchun)
+.env
+.env.prod
+.env.local
+!.env.example
+
+# ───────────────────────────────────────────
+#  PostgreSQL
+# ───────────────────────────────────────────
+postgres_data/       # Docker volume mount
+*.sql                # dump fayllar
+*.dump               # pg_dump chiqishi
+*.psql
+backups/
+
+# ───────────────────────────────────────────
+#  Redis
+# ───────────────────────────────────────────
+redis_data/
+dump.rdb
+
+# ───────────────────────────────────────────
+#  PyCharm / JetBrains
+# ───────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+
+# ───────────────────────────────────────────
+#  VS Code
+# ───────────────────────────────────────────
+.vscode/
+*.code-workspace
+
+# ───────────────────────────────────────────
+#  OS
+# ───────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ───────────────────────────────────────────
+#  Testing & Coverage
+# ───────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# ───────────────────────────────────────────
+#  Mypy / Ruff / Linters
+# ───────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+
+# ───────────────────────────────────────────
+#  Celery
+# ───────────────────────────────────────────
+celerybeat-schedule
+celerybeat.pid
+
+# ───────────────────────────────────────────
+#  Jupyter
+# ───────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ───────────────────────────────────────────
+#  Misc
+# ───────────────────────────────────────────
+*.bak
+*.swp
+*.tmp
+*.orig
+TODO

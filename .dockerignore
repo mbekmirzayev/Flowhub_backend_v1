@@ -1,0 +1,108 @@
+# ───────────────────────────────────────────
+#  Git
+# ───────────────────────────────────────────
+.git/
+.gitignore
+.gitattributes
+
+# ───────────────────────────────────────────
+#  Python cache
+# ───────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# ───────────────────────────────────────────
+#  Virtual environments (image ichida kerak emas)
+# ───────────────────────────────────────────
+.venv/
+venv/
+ENV/
+env/
+.uv/
+
+# ───────────────────────────────────────────
+#  Environment / Secrets
+# ───────────────────────────────────────────
+env/.env
+env/.env.local
+env/.env.*.local
+env/.env.prod
+# env/.env.example — Docker build kontekstiga kirsin (kerak bo'lsa)
+
+# root darajasidagi .env lar
+.env
+.env.local
+# .env.prod — docker-compose --env-file env/.env.prod bilan beriladi
+
+# ───────────────────────────────────────────
+#  PostgreSQL
+# ───────────────────────────────────────────
+postgres_data/    # Docker volume mount
+*.sql             # dump fayllar
+*.dump
+*.psql
+backups/
+
+# ───────────────────────────────────────────
+#  Redis
+# ───────────────────────────────────────────
+redis_data/
+dump.rdb
+*.log
+db.sqlite3
+/staticfiles/
+/mediafiles/
+/static/
+/media/
+
+# ───────────────────────────────────────────
+#  Docker files o'zi (kontekstga kerak emas)
+# ───────────────────────────────────────────
+Dockerfile
+Dockerfile.*
+docker-compose.yml
+docker-compose.*.yml
+.dockerignore
+
+# ───────────────────────────────────────────
+#  IDE / Editor
+# ───────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+*.code-workspace
+
+# ───────────────────────────────────────────
+#  OS
+# ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ───────────────────────────────────────────
+#  Testing & Coverage
+# ───────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.ruff_cache/
+.mypy_cache/
+
+# ───────────────────────────────────────────
+#  Docs & CI (image uchun kerak emas)
+# ───────────────────────────────────────────
+docs/
+*.md
+README*
+CHANGELOG*
+LICENSE
+Makefile
+TODO
