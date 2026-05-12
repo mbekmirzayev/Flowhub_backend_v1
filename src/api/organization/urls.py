@@ -8,5 +8,5 @@ router = DefaultRouter()
 router.register(r'organization', OrganizationModelViewSet, basename='organization')
 
 urlpatterns = [
-    path('/', include(router.urls)),
+    path('', include(router.urls)),
 ]

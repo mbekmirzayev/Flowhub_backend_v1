@@ -1,13 +1,9 @@
-import re
 import uuid
 
 from django.contrib.auth.base_user import BaseUserManager
-from django.core.exceptions import ValidationError
 from django.db.models import Func, Model
 from django.db.models.fields import UUIDField, SlugField, DateTimeField
 from django.utils.text import slugify
-
-
 
 
 class GenRandomUUID(Func):
@@ -24,7 +20,7 @@ class UUIDBaseModel(Model):
 
 
 class SlugBaseModel(Model):
-    slug = SlugField(max_length=255, unique=True, db_index=True, editable=False)
+    slug = SlugField(max_length=255, db_index=True, editable=False)
 
     def save(self, *args, **kwargs):
         if not self.slug:
