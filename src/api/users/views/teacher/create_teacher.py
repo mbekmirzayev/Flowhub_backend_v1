@@ -11,7 +11,7 @@ from apps.common.permissions import IsAdminOrManager
 from apps.users.models import User
 
 
-@extend_schema(tags=['Register'])
+@extend_schema(tags=['Create user'])
 class CreateTeacherAPIVIew(APIView):
     serializer_class = CreateTeacherProfileSerializer
     permission_classes = (IsAdminOrManager,)

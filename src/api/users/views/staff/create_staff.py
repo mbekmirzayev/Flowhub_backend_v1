@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,7 +9,7 @@ from api.utils.otp.send_check_otp import send_verification_code, get_temp_user_k
 from apps.common.permissions import IsAdminOrManager, IsGlobalAdmin
 from apps.users.models import User
 
-
+@extend_schema(tags=['Create user'])
 class CreateStaffAPIView(APIView):
     serializer_class = CreateStaffProfileSerializer
     permission_classes = [IsAdminOrManager, IsGlobalAdmin]

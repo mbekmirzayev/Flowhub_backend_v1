@@ -14,6 +14,6 @@ class Organization(CreateBaseModel, SlugBaseModel):
         db_table = 'organizations'
         verbose_name = _('organization')
         verbose_name_plural = _('organizations')
-        
+
     def __str__(self):
         return self.name

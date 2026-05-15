@@ -9,7 +9,7 @@ from apps.common.permissions import IsAdminOrManager, IsGlobalAdmin
 from apps.users.models import StaffProfile
 
 
-@extend_schema(tags=["Teachers "])
+@extend_schema(tags=["List"])
 class StaffList(ListAPIView):
     serializer_class = StaffListSerializer
     permission_classes = (IsAdminOrManager, IsGlobalAdmin)

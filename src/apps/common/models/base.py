@@ -5,6 +5,8 @@ from django.db.models import Func, Model
 from django.db.models.fields import UUIDField, SlugField, DateTimeField
 from django.utils.text import slugify
 
+from api.utils.phone.normalize_phone import normalize_phone
+
 
 class GenRandomUUID(Func):
     function = 'gen_random_uuid'

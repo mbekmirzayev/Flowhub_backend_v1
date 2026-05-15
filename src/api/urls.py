@@ -5,4 +5,5 @@ urlpatterns = [
     path('', include('api.organization.urls')),
     path('', include('api.users.urls')),
     path('', include('api.category.urls')),
+    path('', include('api.course.urls')),
 ]
