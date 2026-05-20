@@ -1,7 +1,8 @@
-from django.db.models import TextChoices, ForeignKey, CASCADE
+from django.db.models import TextChoices, ForeignKey, CASCADE, Manager
 from django.db.models.fields import DateField, CharField
 from django.utils.translation import gettext_lazy as _
 
+from apps.common.managers.Linked_tenant_manager import LinkedTenantManager
 from apps.common.models import UUIDBaseModel
 from apps.course.models.group import Group
 
@@ -19,3 +20,6 @@ class Lesson(UUIDBaseModel):
 
     class Meta:
         ordering = ['date', 'status']
+
+    objects = LinkedTenantManager(lookup_path='group__organization_id')
+    all_objects = Manager()

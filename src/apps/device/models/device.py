@@ -1,6 +1,7 @@
-from django.db.models import TextChoices, ForeignKey, CASCADE
+from django.db.models import TextChoices, ForeignKey, CASCADE, Manager
 from django.db.models.fields import CharField, TextField, BooleanField, DateTimeField
 
+from apps.common.managers.Linked_tenant_manager import LinkedTenantManager
 from apps.common.models import CreateBaseModel
 from apps.users.models import User
 
@@ -28,3 +29,6 @@ class Device(CreateBaseModel):
     def deactivate(self):
         self.is_active = False
         self.save(update_fields=['is_active'])
+
+    objects = LinkedTenantManager(lookup_path='user__organization_id')
+    all_objects = Manager()

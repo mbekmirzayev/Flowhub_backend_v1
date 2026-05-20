@@ -1,6 +1,7 @@
-from django.db.models import TextChoices, CASCADE, ForeignKey, UniqueConstraint, Q
+from django.db.models import TextChoices, CASCADE, ForeignKey, UniqueConstraint, Q, Manager
 from django.db.models.fields import CharField, DateField
 
+from apps.common.managers.Linked_tenant_manager import LinkedTenantManager
 from apps.common.models import CreateBaseModel
 from apps.course.models import Group
 from apps.users.models import StudentProfile
@@ -25,3 +26,6 @@ class Enrollment(CreateBaseModel):
                 name='unique_active_enrollment_per_group'
             ),
         ]
+
+    objects = LinkedTenantManager(lookup_path='group__organization_id')
+    all_objects = Manager()

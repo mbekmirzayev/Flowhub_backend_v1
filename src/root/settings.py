@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'root.jwt_middleware.CheckSessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.common.middleware.TenantMiddleware',
 ]
 
 ROOT_URLCONF = 'root.urls'
@@ -155,7 +156,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=360),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,  # Oldingi refresh tokenni bekor qilish
 }

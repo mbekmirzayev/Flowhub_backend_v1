@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import ForeignKey, SET_NULL
 from django.db.models.fields import DateField, BooleanField
 
+from apps.common.managers.Linked_tenant_manager import LinkedTenantManager
 from apps.common.models import CreateBaseModel
 from apps.enrollment.models import Enrollment
 
@@ -15,3 +16,6 @@ class Attendance(CreateBaseModel):
         constraints = [
             models.UniqueConstraint(fields=['enrollment', 'date'], name='unique_attendance')
         ]
+
+    objects = LinkedTenantManager(lookup_path='enrollment__group__organization_id')
+    all_objects = models.Manager()

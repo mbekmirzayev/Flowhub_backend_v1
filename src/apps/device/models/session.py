@@ -1,6 +1,8 @@
-from django.db.models import CASCADE, DateTimeField, TextField, GenericIPAddressField, OneToOneField, ForeignKey, Model
+from django.db.models import CASCADE, DateTimeField, TextField, GenericIPAddressField, OneToOneField, ForeignKey, Model, \
+    Manager
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from apps.common.managers.Linked_tenant_manager import LinkedTenantManager
 from apps.device.models import Device
 from apps.users.models import User
 
@@ -52,3 +54,6 @@ class UserSession(Model):
         if self.device:
             self.device.deactivate()
         super().delete(*args, **kwargs)
+
+    objects = LinkedTenantManager(lookup_path='user__organization_id')
+    all_objects = Manager()

@@ -1,7 +1,9 @@
 from django.contrib.postgres.fields import ArrayField
-from django.db.models import TextChoices, CASCADE, ForeignKey
+from django.db.models import TextChoices, CASCADE, ForeignKey, Manager
 from django.db.models.fields import CharField, TimeField
 from django.utils.translation import gettext_lazy as _
+
+from apps.common.managers.Linked_tenant_manager import LinkedTenantManager
 from apps.common.models import UUIDBaseModel
 from apps.course.models.group import Group
 
@@ -20,3 +22,7 @@ class GroupSchedule(UUIDBaseModel):
     selected_days = ArrayField(CharField(max_length=10, choices=DAYS.choices), size=7, verbose_name=_("Dars kunlari"))
     start_time = TimeField()
     end_time = TimeField()
+
+
+    objects = LinkedTenantManager(lookup_path='group__organization_id')
+    all_objects = Manager()

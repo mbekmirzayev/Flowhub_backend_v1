@@ -1,14 +1,14 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import transaction
-from django.db.models import TextChoices, ForeignKey, CASCADE
+from django.db.models import TextChoices
 from django.db.models.fields import EmailField, CharField, BooleanField
 from django.utils.translation import gettext_lazy as _
 
+from apps.common.models import TenantBaseModel
 from apps.common.models.base import UUIDBaseModel, UserManager
-from apps.organization.models.organization import Organization
 
 
-class User(AbstractUser, UUIDBaseModel):
+class User(AbstractUser, TenantBaseModel, UUIDBaseModel):
     class Status(TextChoices):
         GLOBAL_ADMIN = 'global_admin', _('Global admin')
         ADMIN = 'admin', _('Admin')
@@ -16,7 +16,6 @@ class User(AbstractUser, UUIDBaseModel):
         TEACHER = 'teacher', _('Teacher')
         STUDENT = 'student', _('Student')
 
-    organization = ForeignKey(Organization, CASCADE, null=True, blank=True, related_name='users')
     email = EmailField(null=True, blank=True, max_length=255, unique=True)
     role = CharField(max_length=20, choices=Status.choices, default=Status.STUDENT)
     phone = CharField(max_length=20, unique=True)

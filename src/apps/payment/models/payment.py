@@ -3,12 +3,12 @@ from django.db.models.fields import DecimalField, CharField, DateField, DateTime
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from apps.common.models import CreateBaseModel
+from apps.common.models import CreateBaseModel, TenantBaseModel
 from apps.course.models import Course, Group
 from apps.users.models import StudentProfile
 
 
-class Payment(CreateBaseModel):
+class Payment(TenantBaseModel, CreateBaseModel):
     class Status(TextChoices):
         PAID = 'paid', _('Paid')
         UNPAID = 'unpaid', _('Unpaid')
@@ -33,6 +33,11 @@ class Payment(CreateBaseModel):
     due_date = DateField(null=True, blank=True, verbose_name=_("To‘lov muddati"))
     paid_at = DateTimeField(null=True, blank=True, verbose_name=_("To‘langan vaqti"))
 
+    class Meta:
+        db_table = 'payments'
+        verbose_name = _('Payment')
+        verbose_name_plural = _('Payments')
+
     def __str__(self):
         return f"{self.student} - {self.total_amount} ({self.status})"
 
@@ -40,12 +45,13 @@ class Payment(CreateBaseModel):
         paid = self.paid_amount or 0
         total = self.total_amount or 0
 
-        if paid >= total:
+        if paid >= total and total > 0:
             self.status = self.Status.PAID
             if not self.paid_at:
                 self.paid_at = timezone.now()
-            elif paid > 0:
-                self.status = self.Status.PARTIAL
+        elif 0 < paid < total:
+            self.status = self.Status.PARTIAL
         else:
             self.status = self.Status.UNPAID
+
         super().save(*args, **kwargs)

@@ -3,6 +3,7 @@ from rest_framework.serializers import ModelSerializer
 
 from apps.category.models import Category
 from apps.course.models import Course
+from apps.organization.models import Organization
 from apps.users.models import TeacherProfile
 
 
@@ -25,7 +26,8 @@ class CoursePostSerializer(ModelSerializer):
         queryset=Category.objects.all()
 
     )
+    organization_id = PrimaryKeyRelatedField(required=False, source='organization', queryset=Organization.objects.all())
 
     class Meta:
         model = Course
-        fields = ('title', 'teachers', 'duration', 'lesson_count', 'price', 'category_id')
+        fields = ('title', 'teachers', 'duration', 'lesson_count', 'price', 'category_id', 'organization_id')
