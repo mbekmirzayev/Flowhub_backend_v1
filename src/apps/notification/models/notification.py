@@ -1,7 +1,9 @@
-from django.db.models import DateTimeField, BooleanField, CharField, TextField, ForeignKey, CASCADE, TextChoices, Model
+from django.db.models import DateTimeField, BooleanField, CharField, TextField, ForeignKey, CASCADE, TextChoices, Model, \
+    Manager
 
 from apps.common.managers.Linked_tenant_manager import LinkedTenantManager
 from apps.users.models import User
+
 
 class Notification(Model):
     class Type(TextChoices):
@@ -19,11 +21,10 @@ class Notification(Model):
     created_at = DateTimeField(auto_now_add=True)
 
     objects = LinkedTenantManager(lookup_path='recipient__organization_id')
-    all_objects = Model.objects
-
+    all_objects = Manager()
     class Meta:
         ordering = ['-created_at']
-        db_table = 'notifications' # Jadval nomini ham loyihangiz standartiga moslab qo'yish tavsiya etiladi
+        db_table = 'notifications'  # Jadval nomini ham loyihangiz standartiga moslab qo'yish tavsiya etiladi
 
     def __str__(self):
         return f"To {self.recipient.phone}: {self.title}"
