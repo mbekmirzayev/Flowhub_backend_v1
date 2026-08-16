@@ -1,3 +1,4 @@
 from api.users.serializers.staff.create_staff import CreateStaffProfileSerializer
 from api.users.serializers.staff.staff_list import StaffListSerializer
+from api.users.serializers.staff.staff_detail import StaffDetailSerializer, StaffUpdateSerializer
 

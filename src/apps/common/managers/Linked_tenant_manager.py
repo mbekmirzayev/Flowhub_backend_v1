@@ -4,13 +4,17 @@ from apps.common.context import is_global_admin_user, get_current_organization_i
 
 
 class LinkedTenantManager(Manager):
-    def __init__(self, lookup_path, *args, **kwargs):
+    def __init__(self, lookup_path=None, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
         self.lookup_path = lookup_path
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
+        if not self.lookup_path:
+            return queryset
+
         if is_global_admin_user():
             return queryset
 

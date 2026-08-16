@@ -15,13 +15,15 @@ class StaffList(ListAPIView):
     permission_classes = (IsAdminOrManager, IsGlobalAdmin)
     pagination_class = CustomPageNumberPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['user__organization', 'user__is_active']
+    filterset_fields = ['organization', 'user__is_active']
     search_fields = ['user__first_name', 'user__last_name', 'user__phone']
     ordering_fields = ['created_at', 'user__first_name']
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser:
-            return StaffProfile.objects.all().select_related('user', 'user__organization')
+        if user.is_global_admin:
+            return StaffProfile.all_objects.all().select_related('user', 'organization')
+        return StaffProfile.objects.filter(
+            organization=user.organization
+        ).select_related('user')
 
-        return StaffProfile.objects.filter(organization_id=user.organization_id).select_related('user')

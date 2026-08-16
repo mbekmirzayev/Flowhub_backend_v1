@@ -1,22 +1,23 @@
-from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from rest_framework.viewsets import ModelViewSet
 
 
-class BaseOrganizationSerializer(serializers.ModelSerializer):
+class TenantBaseModelViewSet(ModelViewSet):
     """
-    Hamma tashkilotga tegishli serializerlar uchun asosiy klass.
-    organization_id ni request jo'natayotgan userdan avtomatik oladi.
+    Tashkilotga (Organization) bog'liq barcha ViewSet'lar
+    uchun umumiy ota klass.
     """
 
-    def create(self, validated_data):
-        request = self.context.get('request')
-        user = request.user if request else None
+    def perform_create(self, serializer):
+        user = self.request.user
+        save_kwargs = {}
 
-        if user and user.is_superuser:
-            if 'organization' not in validated_data:
-                raise serializers.ValidationError(
-                    {"organization": "Global admin tashkilotni ko'rsatishi shart!"}
-                )
+        if user.is_global_admin:
+            if 'organization' not in serializer.validated_data:
+                raise ValidationError({"organization_id": "Global admin tashkilotni ko'rsatishi shart."})
+        elif user.is_local_admin or user.is_manager:
+            save_kwargs['organization'] = user.organization
         else:
-            validated_data['organization'] = user.organization
+            raise ValidationError("Sizda obyekt yaratish huquqi yo'q.")
 
-        return super().create(validated_data)
+        serializer.save(**save_kwargs)

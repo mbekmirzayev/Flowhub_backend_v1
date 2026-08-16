@@ -37,7 +37,6 @@ class UserSession(Model):
         )
         refresh = RefreshToken.for_user(user)
 
-        # ⚠️ MUHIM: Middleware tekshirishi uchun tokenga device_id ni qo'shamiz
         if device:
             refresh['device_id'] = device.device_id
 

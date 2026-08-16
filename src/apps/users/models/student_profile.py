@@ -4,11 +4,11 @@ from django.db.models import TextChoices, CASCADE, OneToOneField
 from django.db.models.fields import CharField, BooleanField
 from django.utils.translation import gettext_lazy as _
 
-from apps.common.models import CreateBaseModel
+from apps.common.models import CreateBaseModel, TenantBaseModel
 from apps.users.models.users import User
 
 
-class StudentProfile(CreateBaseModel):
+class StudentProfile(TenantBaseModel, CreateBaseModel):
     class StudentStatus(TextChoices):
         ACTIVE = 'active', _("Active")
         FROZEN = 'frozen', _('Frozen')

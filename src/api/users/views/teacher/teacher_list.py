@@ -15,13 +15,16 @@ class TeacherList(ListAPIView):
     permission_classes = (IsAdminOrManager, )
     pagination_class = CustomPageNumberPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['user__organization', 'user__is_active']
+    filterset_fields = ['organization', 'user__is_active']
     search_fields = ['user__first_name', 'user__last_name', 'user__phone']
     ordering_fields = ['created_at', 'user__first_name']
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser:
-            return TeacherProfile.objects.all().select_related('user', 'user__organization')
-
-        return TeacherProfile.objects.filter(organization_id=user.organization_id).select_related('user')
+        if user.is_global_admin:
+            return TeacherProfile.all_objects.all().select_related('user', 'organization')
+        # TenantManager (objects) already scopes by org via ContextVar;
+        # the explicit filter below is a belt-and-suspenders guard.
+        return TeacherProfile.objects.filter(
+            organization=user.organization
+        ).select_related('user')

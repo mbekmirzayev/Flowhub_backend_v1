@@ -1,3 +1,4 @@
 from api.users.serializers.student.create_student import CreateStudentProfileSerializer
 from api.users.serializers.student.student_list import StudentListSerializer
+from api.users.serializers.student.student_detail import StudentDetailSerializer, StudentUpdateSerializer
 

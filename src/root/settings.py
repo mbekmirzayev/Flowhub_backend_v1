@@ -137,8 +137,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    # Secure-by-default: every endpoint requires authentication unless it
+    # explicitly overrides permission_classes (e.g. the login endpoint).
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ),
 }
 
@@ -156,9 +158,12 @@ SPECTACULAR_SETTINGS = {
 }
 
 SIMPLE_JWT = {
+    # 30 minutes is the standard for staff CRMs — reduces exposure window
+    # if a token is stolen (e.g. from a logged-in device left unattended).
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=360),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,  # Oldingi refresh tokenni bekor qilish
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
 CACHES = {

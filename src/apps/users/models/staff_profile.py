@@ -2,16 +2,21 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import CASCADE, OneToOneField
 from django.db.models.fields import DecimalField, BooleanField
+from django.utils.translation import gettext_lazy as _
 
-from apps.common.models import CreateBaseModel
+from apps.common.models import CreateBaseModel, TenantBaseModel
 from apps.users.models.users import User
 
 
-class StaffProfile(CreateBaseModel):
+class StaffProfile(TenantBaseModel, CreateBaseModel):
     user = OneToOneField(User, CASCADE, related_name='staff_profile')
     salary = DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     is_deleted = BooleanField(default=False)
     is_active = BooleanField(default=True)
+
+    class Meta:
+        verbose_name = _('Staff profile')
+        verbose_name_plural = _('Staff profiles')
 
     def clean(self):
         if self.user.role not in [
@@ -30,4 +35,4 @@ class StaffProfile(CreateBaseModel):
                 self.user.soft_delete()
 
     def __str__(self):
-        return f"{self.user.get_full_name()}"
+        return f"{self.user.get_full_name()} ({self.user.role})"

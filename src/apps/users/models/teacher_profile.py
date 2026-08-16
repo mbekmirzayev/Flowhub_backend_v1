@@ -3,11 +3,12 @@ from django.db import transaction
 from django.db.models import TextChoices, OneToOneField, CASCADE
 from django.db.models.fields import CharField, DecimalField, BooleanField
 from django.utils.translation import gettext_lazy as _
-from apps.common.models import CreateBaseModel
+
+from apps.common.models import CreateBaseModel, TenantBaseModel
 from apps.users.models.users import User
 
 
-class TeacherProfile(CreateBaseModel):
+class TeacherProfile(TenantBaseModel, CreateBaseModel):
     class WorkType(TextChoices):
         FULL_TIME = 'full_time', _('Full_time')
         PART_TIME = 'part_time', _('Part_time')
@@ -25,6 +26,10 @@ class TeacherProfile(CreateBaseModel):
     is_deleted = BooleanField(default=False)
     is_active = BooleanField(default=True)
 
+    class Meta:
+        verbose_name = _('Teacher profile')
+        verbose_name_plural = _('Teacher profiles')
+
     def clean(self):
         if self.user.role != User.Status.TEACHER:
             raise ValidationError("User role must be TEACHER")
@@ -36,3 +41,6 @@ class TeacherProfile(CreateBaseModel):
             self.save()
             if not self.user.is_deleted:
                 self.user.soft_delete()
+
+    def __str__(self):
+        return f"{self.user.get_full_name()} ({self.subject})"

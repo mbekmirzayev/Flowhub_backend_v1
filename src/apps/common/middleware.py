@@ -26,8 +26,7 @@ class TenantMiddleware:
             if auth_header and auth_header.startswith('Bearer '):
                 token = auth_header.split(' ')[1]
                 try:
-                    payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'],
-                                         options={"verify_signature": False})
+                    payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
                     user_id = payload.get('user_id')
 
                     if user_id:

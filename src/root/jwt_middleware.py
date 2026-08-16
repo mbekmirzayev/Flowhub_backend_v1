@@ -16,8 +16,7 @@ class CheckSessionMiddleware:
             token = auth_header.split(' ')[1]
             try:
                 # Tokenni decode qilamiz (SECRET_KEY orqali)
-                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'],
-                                     options={"verify_signature": False})
+                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
                 token_device_id = payload.get('device_id')
 
                 # Agar foydalanuvchi tizimga kirgan bo'lsa va tokenda device_id bo'lsa

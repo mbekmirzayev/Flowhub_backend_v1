@@ -62,11 +62,17 @@ class VerifyCodeAPI(APIView):
                 )
 
                 # 4. Role bo'yicha Profil yaratish
+                # NOTE: TeacherProfile and StaffProfile now inherit TenantBaseModel,
+                # so organization_id must be passed explicitly here. The user already
+                # has organization_id set above, so we pull it from there.
+                org_id = user_data.get('organization_id')
+
                 if role == User.Status.TEACHER:
                     TeacherProfile.objects.create(
                         user=user,
                         subject=user_data.get('subject', 'Noma\'lum'),
                         work_type=user_data.get('work_type', TeacherProfile.WorkType.FULL_TIME),
+                        organization_id=org_id,
                     )
 
                 elif role == User.Status.STUDENT:
@@ -74,15 +80,13 @@ class VerifyCodeAPI(APIView):
                         user=user,
                         parent_phone=user_data.get('parent_phone'),
                         status=StudentProfile.StudentStatus.ACTIVE,
-                        # group_id modelingizda bo'lsa, uni ham qo'shishingiz mumkin
+                        organization_id=org_id,
                     )
 
                 elif role in [User.Status.MANAGER, User.Status.ADMIN]:
-                    # StaffProfile modeli uchun
                     StaffProfile.objects.create(
                         user=user,
-                        # Agar StaffProfile'da qo'shimcha fieldlar bo'lsa (masalan salary)
-                        # user_data.get('salary') qilib yozish mumkin
+                        organization_id=org_id,
                     )
 
             # 5. Muvaffaqiyatli bo'lsa keshni tozalaymiz
