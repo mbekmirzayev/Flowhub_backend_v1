@@ -1,0 +1,396 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}Flowhub Dashboard{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+  /* ── Dashboard Layout ────────────────────────────────────────────────── */
+  .fh-dashboard {
+    padding: 20px 0;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+  }
+
+  .fh-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #adb5bd;
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* ── Stat Cards ──────────────────────────────────────────────────────── */
+  .fh-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .fh-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .fh-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  .fh-card-icon {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+
+  .fh-card-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #adb5bd;
+  }
+
+  .fh-card-value {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+    color: #f8f9fa;
+  }
+
+  .fh-card-sub {
+    font-size: 11px;
+    color: #6c757d;
+    margin-top: 2px;
+  }
+
+  /* Accent variants */
+  .fh-card--blue   { border-left: 4px solid #007bff; }
+  .fh-card--green  { border-left: 4px solid #28a745; }
+  .fh-card--purple { border-left: 4px solid #6f42c1; }
+  .fh-card--orange { border-left: 4px solid #fd7e14; }
+  .fh-card--teal   { border-left: 4px solid #17a2b8; }
+  .fh-card--red    { border-left: 4px solid #dc3545; }
+  .fh-card--yellow { border-left: 4px solid #ffc107; }
+  .fh-card--gray   { border-left: 4px solid #6c757d; }
+
+  /* ── Progress bar ────────────────────────────────────────────────────── */
+  .fh-progress {
+    background: rgba(255,255,255,0.1);
+    border-radius: 99px;
+    height: 6px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .fh-progress-bar {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #28a745, #20c997);
+    transition: width 0.6s ease;
+  }
+
+  /* ── History Table ───────────────────────────────────────────────────── */
+  .fh-table-wrap {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .fh-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .fh-table thead th {
+    background: rgba(255,255,255,0.07);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #adb5bd;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .fh-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s;
+  }
+
+  .fh-table tbody tr:last-child { border-bottom: none; }
+
+  .fh-table tbody tr:hover {
+    background: rgba(255,255,255,0.05);
+  }
+
+  .fh-table td {
+    padding: 10px 14px;
+    color: #dee2e6;
+    vertical-align: middle;
+  }
+
+  /* ── Badge ───────────────────────────────────────────────────────────── */
+  .fh-badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: #fff;
+  }
+
+  .fh-badge--student  { background: #17a2b8; }
+  .fh-badge--payment  { background: #28a745; }
+  .fh-badge--lesson   { background: #fd7e14; }
+  .fh-badge--group    { background: #6f42c1; }
+  .fh-badge--default  { background: #6c757d; }
+
+  /* ── Two-column layout ───────────────────────────────────────────────── */
+  .fh-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .fh-panel {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .fh-panel h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #adb5bd;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin: 0 0 16px;
+  }
+
+  .fh-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 13px;
+    color: #dee2e6;
+  }
+
+  .fh-stat-row:last-child { border-bottom: none; }
+
+  .fh-stat-num {
+    font-weight: 700;
+    font-size: 15px;
+    color: #f8f9fa;
+  }
+
+  .fh-amount-green { color: #28a745; }
+  .fh-amount-yellow { color: #ffc107; }
+  .fh-amount-red { color: #dc3545; }
+
+  @media (max-width: 768px) {
+    .fh-two-col { grid-template-columns: 1fr; }
+    .fh-cards { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fh-dashboard">
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+    <div>
+      <h1 style="font-size:22px;font-weight:800;color:#f8f9fa;margin:0;">
+        📊 Flowhub Dashboard
+      </h1>
+      <p style="color:#6c757d;margin:4px 0 0;font-size:13px;">
+        {% now "l, d F Y" %} &nbsp;·&nbsp; Real-time CRM overview
+      </p>
+    </div>
+    <div style="font-size:12px;color:#6c757d;">
+      💡 Month: <strong style="color:#adb5bd;">{{ current_month }}</strong>
+    </div>
+  </div>
+
+  <!-- ── Section 1: Users ────────────────────────────────────────────────── -->
+  <p class="fh-section-title">👥 Users Overview</p>
+  <div class="fh-cards">
+    <div class="fh-card fh-card--blue">
+      <span class="fh-card-icon">👨‍🎓</span>
+      <span class="fh-card-label">Students</span>
+      <span class="fh-card-value">{{ user_stats.students }}</span>
+      <span class="fh-card-sub">Active in the system</span>
+    </div>
+    <div class="fh-card fh-card--orange">
+      <span class="fh-card-icon">👨‍🏫</span>
+      <span class="fh-card-label">Teachers</span>
+      <span class="fh-card-value">{{ user_stats.teachers }}</span>
+      <span class="fh-card-sub">Active in the system</span>
+    </div>
+    <div class="fh-card fh-card--purple">
+      <span class="fh-card-icon">👔</span>
+      <span class="fh-card-label">Staff</span>
+      <span class="fh-card-value">{{ user_stats.staff }}</span>
+      <span class="fh-card-sub">Admins &amp; Managers</span>
+    </div>
+    <div class="fh-card fh-card--teal">
+      <span class="fh-card-icon">✅</span>
+      <span class="fh-card-label">Active Users</span>
+      <span class="fh-card-value">{{ user_stats.active }}</span>
+      <span class="fh-card-sub">of {{ user_stats.total }} total</span>
+    </div>
+  </div>
+
+  <!-- ── Section 2: Groups & Lessons ────────────────────────────────────── -->
+  <p class="fh-section-title">📚 Groups &amp; Lessons</p>
+  <div class="fh-cards">
+    <div class="fh-card fh-card--green">
+      <span class="fh-card-icon">🟢</span>
+      <span class="fh-card-label">Active Groups</span>
+      <span class="fh-card-value">{{ group_stats.active }}</span>
+      <span class="fh-card-sub">of {{ group_stats.total }} total</span>
+    </div>
+    <div class="fh-card fh-card--gray">
+      <span class="fh-card-icon">🔒</span>
+      <span class="fh-card-label">Closed Groups</span>
+      <span class="fh-card-value">{{ group_stats.closed }}</span>
+      <span class="fh-card-sub">Archived groups</span>
+    </div>
+    <div class="fh-card fh-card--teal">
+      <span class="fh-card-icon">📅</span>
+      <span class="fh-card-label">Today's Lessons</span>
+      <span class="fh-card-value">{{ lesson_stats.total }}</span>
+      <span class="fh-card-sub">{{ lesson_stats.completed }} done · {{ lesson_stats.planned }} planned</span>
+    </div>
+    <div class="fh-card fh-card--red">
+      <span class="fh-card-icon">❌</span>
+      <span class="fh-card-label">Cancelled Today</span>
+      <span class="fh-card-value">{{ lesson_stats.cancelled }}</span>
+      <span class="fh-card-sub">Lessons cancelled today</span>
+    </div>
+  </div>
+
+  <!-- ── Section 3: Finance & Attendance (2-col) ─────────────────────────── -->
+  <p class="fh-section-title">💰 Finance &amp; Attendance — {{ current_month }}</p>
+  <div class="fh-two-col">
+
+    <!-- Finance panel -->
+    <div class="fh-panel">
+      <h3>💳 Payment Summary</h3>
+      <div class="fh-stat-row">
+        <span>✅ Paid ({{ payment_stats.count_paid }} transactions)</span>
+        <span class="fh-stat-num fh-amount-green">
+          {{ payment_stats.total_paid|floatformat:0 }} UZS
+        </span>
+      </div>
+      <div class="fh-stat-row">
+        <span>⏳ Pending ({{ payment_stats.count_pending }} transactions)</span>
+        <span class="fh-stat-num fh-amount-yellow">
+          {{ payment_stats.total_pending|floatformat:0 }} UZS
+        </span>
+      </div>
+      <div class="fh-stat-row">
+        <span>🔴 Overdue ({{ payment_stats.count_overdue }} transactions)</span>
+        <span class="fh-stat-num fh-amount-red">
+          {{ payment_stats.total_overdue|floatformat:0 }} UZS
+        </span>
+      </div>
+    </div>
+
+    <!-- Attendance panel -->
+    <div class="fh-panel">
+      <h3>📋 Attendance Summary</h3>
+      <div class="fh-stat-row">
+        <span>✅ Present</span>
+        <span class="fh-stat-num fh-amount-green">{{ attendance_stats.present }}</span>
+      </div>
+      <div class="fh-stat-row">
+        <span>❌ Absent</span>
+        <span class="fh-stat-num fh-amount-red">{{ attendance_stats.absent }}</span>
+      </div>
+      <div class="fh-stat-row">
+        <span>🔔 Excused</span>
+        <span class="fh-stat-num fh-amount-yellow">{{ attendance_stats.excused }}</span>
+      </div>
+      <div style="margin-top:14px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#adb5bd;margin-bottom:4px;">
+          <span>Presence rate</span>
+          <span><strong>{{ attendance_stats.present_pct }}%</strong></span>
+        </div>
+        <div class="fh-progress">
+          <div class="fh-progress-bar" style="width:{{ attendance_stats.present_pct }}%;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Section 4: Recent History ────────────────────────────────────────── -->
+  <p class="fh-section-title">📜 Recent Audit Log</p>
+  <div class="fh-table-wrap">
+    <table class="fh-table">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Performed By</th>
+          <th>Student</th>
+          <th>Group</th>
+          <th>When</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in recent_history %}
+        <tr>
+          <td>
+            {% with action=entry.action %}
+            {% if "STUDENT" in action %}
+              <span class="fh-badge fh-badge--student">{{ entry.get_action_display }}</span>
+            {% elif "PAYMENT" in action %}
+              <span class="fh-badge fh-badge--payment">{{ entry.get_action_display }}</span>
+            {% elif "LESSON" in action %}
+              <span class="fh-badge fh-badge--lesson">{{ entry.get_action_display }}</span>
+            {% elif "GROUP" in action or "TEACHER" in action %}
+              <span class="fh-badge fh-badge--group">{{ entry.get_action_display }}</span>
+            {% else %}
+              <span class="fh-badge fh-badge--default">{{ entry.get_action_display }}</span>
+            {% endif %}
+            {% endwith %}
+          </td>
+          <td>{{ entry.performed_by.phone|default:"—" }}</td>
+          <td>{{ entry.student.user.get_full_name|default:"—" }}</td>
+          <td>{{ entry.group.name|default:"—" }}</td>
+          <td style="color:#6c757d;font-size:11px;">
+            {{ entry.created_at|date:"d M Y · H:i" }}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align:center;color:#6c757d;padding:24px;">
+            No history entries yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}

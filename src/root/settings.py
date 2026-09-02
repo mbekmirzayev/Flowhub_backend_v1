@@ -15,6 +15,7 @@ DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
+    'jazzmin',  # must be before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -22,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'corsheaders',
 
     # my apps
     'apps.users',
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -174,4 +177,175 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
+}
+CORS_ALLOWED_ORIGINS = [
+    "https://flowhub.uz",
+    "https://www.flowhub.uz",
+]
+CORS_ORIGIN_ALLOW_ALL = True
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'defy-tribune-oppose.ngrok-free.dev',
+]
+
+# ---------------------------------------------------------------------------
+# STATIC files (production collectstatic target)
+# ---------------------------------------------------------------------------
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# ---------------------------------------------------------------------------
+# Django Jazzmin — Admin UI Configuration
+# ---------------------------------------------------------------------------
+JAZZMIN_SETTINGS = {
+    # ── Branding ────────────────────────────────────────────────────────────
+    "site_title": "Flowhub Admin",
+    "site_header": "Flowhub CRM",
+    "site_brand": "Flowhub",
+    "site_logo": None,
+    "login_logo": None,
+    "login_logo_dark": None,
+    "site_logo_classes": "img-circle",
+    "site_icon": None,
+    "welcome_sign": "Welcome to Flowhub CRM Admin",
+    "copyright": "Flowhub © 2026",
+
+    # ── Search ──────────────────────────────────────────────────────────────
+    "search_model": ["users.User", "apps.course.Group", "apps.payment.Payment"],
+
+    # ── User avatar ─────────────────────────────────────────────────────────
+    "user_avatar": None,
+
+    # ── Top Menu ────────────────────────────────────────────────────────────
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "📊 Dashboard", "url": "/admin/dashboard/", "permissions": ["auth.view_user"]},
+        {"name": "API Docs", "url": "/api/schema/swagger-ui/", "new_window": True},
+        {"model": "users.User"},
+    ],
+
+    # ── User menu (top-right) ────────────────────────────────────────────────
+    "usermenu_links": [
+        {"name": "Support", "url": "#", "new_window": True},
+        {"model": "auth.user"},
+    ],
+
+    # ── Sidebar ─────────────────────────────────────────────────────────────
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+
+    # Custom order and icons for sidebar
+    "order_with_respect_to": [
+        "organization",
+        "users",
+        "course",
+        "enrollment",
+        "payment",
+        "attendance",
+        "history",
+        "notification",
+        "category",
+        "device",
+        "auth",
+    ],
+
+    # FontAwesome 5 icons per model
+    "icons": {
+        # Auth
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        # Organization
+        "organization": "fas fa-building",
+        "organization.Organization": "fas fa-building",
+        # Users
+        "users": "fas fa-users",
+        "users.User": "fas fa-user-circle",
+        "users.StaffProfile": "fas fa-user-tie",
+        "users.StudentProfile": "fas fa-user-graduate",
+        "users.TeacherProfile": "fas fa-chalkboard-teacher",
+        # Category
+        "category": "fas fa-tags",
+        "category.Category": "fas fa-tag",
+        # Course
+        "course": "fas fa-book-open",
+        "course.Course": "fas fa-book",
+        "course.Group": "fas fa-layer-group",
+        "course.GroupSchedule": "fas fa-calendar-alt",
+        "course.Lesson": "fas fa-chalkboard",
+        # Enrollment
+        "enrollment": "fas fa-clipboard-list",
+        "enrollment.Enrollment": "fas fa-user-plus",
+        # Payment
+        "payment": "fas fa-money-bill-wave",
+        "payment.Payment": "fas fa-receipt",
+        # Attendance
+        "attendance": "fas fa-calendar-check",
+        "attendance.Attendance": "fas fa-user-check",
+        # History
+        "history": "fas fa-history",
+        "history.History": "fas fa-scroll",
+        # Notification
+        "notification": "fas fa-bell",
+        "notification.Notification": "fas fa-bell",
+        # Device
+        "device": "fas fa-laptop",
+        "device.Device": "fas fa-mobile-alt",
+        "device.UserSession": "fas fa-shield-alt",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+
+    # ── UI toggles ──────────────────────────────────────────────────────────
+    "related_modal_active": True,
+    "custom_css": None,
+    "custom_js": None,
+    "use_google_fonts_cdn": True,
+    "show_ui_builder": False,
+
+    # ── Changeform ──────────────────────────────────────────────────────────
+    "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {
+        "auth.user": "collapsible",
+        "auth.group": "vertical_tabs",
+    },
+
+    # ── Language chooser ────────────────────────────────────────────────────
+    "language_chooser": False,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    # ── Theme ───────────────────────────────────────────────────────────────
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-primary",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark",
+    "no_navbar_border": True,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "darkly",         # Bootstrap dark theme
+    "dark_mode_theme": "darkly",
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
+    },
 }
