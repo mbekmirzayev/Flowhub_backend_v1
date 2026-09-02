@@ -1,2 +1,1 @@
-from api.organization.serializers.organization import OrganizationModelSerializer
-
+from api.organization.serializers.organization import OrganizationModelSerializer, OrganizationTenantSerializer
