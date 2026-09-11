@@ -1,3 +1,20 @@
+"""
+ChangePasswordAPI
+==================
+POST /api/v1/change-password  — changes the authenticated user's password.
+
+Body:
+    {
+        "current_password": "...",
+        "new_password": "...",
+        "confirm_password": "..."
+    }
+
+Responses:
+    200 — password changed successfully
+    400 — validation error (wrong current password / mismatch)
+    401 — not authenticated
+"""
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -7,13 +24,13 @@ from rest_framework.views import APIView
 from api.auth.serializers.change_password import ChangePasswordSerializer
 
 
-@extend_schema(tags=["auth"])
+@extend_schema(tags=["auth"], summary="Change current user password")
 class ChangePasswordAPI(APIView):
     """
     Authenticated endpoint to change the current user's password.
 
-    POST /api/v1/change_password
-    Body: { "old_password": "...", "new_password": "..." }
+    POST /api/v1/change-password
+    Body: { "current_password": "...", "new_password": "...", "confirm_password": "..." }
     """
     permission_classes = [IsAuthenticated]
     serializer_class = ChangePasswordSerializer
@@ -23,13 +40,13 @@ class ChangePasswordAPI(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = request.user
-        old_password = serializer.validated_data['old_password']
+        current_password = serializer.validated_data['current_password']
         new_password = serializer.validated_data['new_password']
 
         # Validate the current password
-        if not user.check_password(old_password):
+        if not user.check_password(current_password):
             return Response(
-                {"old_password": "The current password is incorrect."},
+                {"detail": "Current password is incorrect."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
